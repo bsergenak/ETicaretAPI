@@ -1,5 +1,5 @@
-﻿using System;
-using ETicaretAPI.Infrastructure.Operations;
+﻿using ETicaretAPI.Infrastructure.Operations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

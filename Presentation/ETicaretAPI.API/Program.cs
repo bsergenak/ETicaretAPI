@@ -7,21 +7,22 @@ using ETicaretAPI.Infrastructure.Services.Storage.Local;
 using ETicaretAPI.Persistence;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
-builder.Services.AddAplicationServices();
+builder.Services.AddApplicationServices();
 
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
+//builder.Services.AddStorage();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod()
+    policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod()
 ));
 
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
@@ -29,7 +30,6 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -37,15 +37,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new()
         {
-            ValidateAudience = true, //oluşturulacak token değerini kimlerin/hangi origin/sitelerin kullanıcı belirlediğimiz değeri -> www.orasiburasi.com
-            ValidateIssuer = true, //oluşturulacak tokendeğerini kimin dağıttını ifade edecek alan -> www.tokencı.com
-            ValidateLifetime = true,  //oluşturulan token değer süresini kontrol eder.
-            ValidateIssuerSigningKey = true,  //üretilecek token değerini uygulamaya ait olduğunu ifade eden security key verisinin doğrulanmasıdır.
-
+            ValidateAudience = true, //Olusturulacak token degerini kimlerin/hangi originlerin/sitelerin kullanıcıyı belirledigimiz degerdir. -> www.bilmemne.com
+            ValidateIssuer = true, //Oluþturulacak token degerini kimin dagittigini ifade edecegimiz alandir. -> www.myapi.com
+            ValidateLifetime = true, //Olusturulan token deðerinin süresini kontrol edecek olan dogrulamadir.
+            ValidateIssuerSigningKey = true, //Üretilecek token degerinin uygulamamiza ait bir deger oldugunu ifade eden suciry key verisinin dogrulanmasidir.
 
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey:"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
         };
     });
 
@@ -58,13 +57,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
 app.UseCors();
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();

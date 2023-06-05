@@ -10,7 +10,6 @@ namespace ETicaretAPI.Application.Exceptions
     {
         public NotFoundUserException() : base("Kullanıcı adı veya şifre hatalı.")
         {
-
         }
 
         public NotFoundUserException(string? message) : base(message)

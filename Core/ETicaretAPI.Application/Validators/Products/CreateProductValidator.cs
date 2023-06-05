@@ -10,24 +10,24 @@ namespace ETicaretAPI.Application.Validators.Products
             RuleFor(p => p.Name)
                 .NotEmpty()
                 .NotNull()
-                .WithMessage("Lutfen urun adini bos gecmeyiniz")
+                    .WithMessage("Lütfen ürün adını boş geçmeyiniz.")
                 .MaximumLength(150)
                 .MinimumLength(5)
-                .WithMessage("Lutfen urun adini 5 ile 150 karakter arasinda giriniz");
+                    .WithMessage("Lütfen ürün adını 5 ile 150 karakter arasında giriniz.");
 
             RuleFor(p => p.Stock)
                 .NotEmpty()
                 .NotNull()
-                .WithMessage("Lutfen stok bilgisini bos gecmeyiniz")
-                .Must(s => s > 0)
-                .WithMessage("Stok bilgisi negatif olamaz");
+                    .WithMessage("Lütfen stok bilgisini boş geçmeyiniz.")
+                .Must(s => s >= 0)
+                    .WithMessage("Stok bilgisi negatif olamaz!");
 
             RuleFor(p => p.Price)
                 .NotEmpty()
                 .NotNull()
-                .WithMessage("Lutfen fiyat bilgisini bos gecmeyiniz")
-                .Must(s => s > 0)
-                .WithMessage("Fiyat bilgisi negatif olamaz");
+                    .WithMessage("Lütfen fiyat bilgisini boş geçmeyiniz.")
+                .Must(s => s >= 0)
+                    .WithMessage("Fiyat bilgisi negatif olamaz!");
         }
     }
 }

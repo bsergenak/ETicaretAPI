@@ -18,7 +18,9 @@ namespace ETicaretAPI.Persistence.Repositories
         {
             _context = context;
         }
+
         public DbSet<T> Table => _context.Set<T>();
+
         public IQueryable<T> GetAll(bool tracking = true)
         {
             var query = Table.AsQueryable();
@@ -33,7 +35,7 @@ namespace ETicaretAPI.Persistence.Repositories
                 query = query.AsNoTracking();
             return query;
         }
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true) 
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true)
         {
             var query = Table.AsQueryable();
             if (!tracking)
@@ -45,9 +47,10 @@ namespace ETicaretAPI.Persistence.Repositories
         //=> await Table.FindAsync(Guid.Parse(id));
         {
             var query = Table.AsQueryable();
-            if(!tracking)
+            if (!tracking)
                 query = Table.AsNoTracking();
             return await query.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
         }
+
     }
 }

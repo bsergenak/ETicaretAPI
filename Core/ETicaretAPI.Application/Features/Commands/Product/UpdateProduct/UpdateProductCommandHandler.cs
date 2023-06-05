@@ -1,6 +1,10 @@
 ﻿using ETicaretAPI.Application.Repositories;
 using MediatR;
-using P = ETicaretAPI.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ETicaretAPI.Application.Features.Commands.Product.UpdateProduct
 {
@@ -17,7 +21,7 @@ namespace ETicaretAPI.Application.Features.Commands.Product.UpdateProduct
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            P.Product product = await _productReadRepository.GetByIdAsync(request.Id);
+            Domain.Entities.Product product = await _productReadRepository.GetByIdAsync(request.Id);
             product.Stock = request.Stock;
             product.Name = request.Name;
             product.Price = request.Price;

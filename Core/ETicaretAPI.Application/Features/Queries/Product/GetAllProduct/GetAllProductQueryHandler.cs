@@ -1,5 +1,4 @@
 ﻿using ETicaretAPI.Application.Repositories;
-using ETicaretAPI.Application.RequestParameters;
 using MediatR;
 using System;
 using System.Collections.Generic;

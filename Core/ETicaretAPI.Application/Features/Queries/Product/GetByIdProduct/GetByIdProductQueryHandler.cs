@@ -4,10 +4,10 @@ using P = ETicaretAPI.Domain.Entities;
 
 namespace ETicaretAPI.Application.Features.Queries.Product.GetByIdProduct
 {
-    public class GetByIdProductQueryHandler : IRequestHandler<GetByIdProductQueryRequest, GetByIdProductQueryResponse>
+    internal class GetByIdProductQueryHandler : IRequestHandler<GetByIdProductQueryRequest, GetByIdProductQueryResponse>
     {
-        readonly IProductReadRepository _productReadRepository;
 
+        readonly IProductReadRepository _productReadRepository;
         public GetByIdProductQueryHandler(IProductReadRepository productReadRepository)
         {
             _productReadRepository = productReadRepository;
