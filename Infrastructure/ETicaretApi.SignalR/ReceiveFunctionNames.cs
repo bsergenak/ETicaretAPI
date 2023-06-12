@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretApi.SignalR
+namespace ETicaretAPI.SignalR
 {
     public static class ReceiveFunctionNames
     {

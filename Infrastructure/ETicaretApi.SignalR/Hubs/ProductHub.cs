@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretApi.SignalR.Hubs
+namespace ETicaretAPI.SignalR.Hubs
 {
     public class ProductHub : Hub
     {

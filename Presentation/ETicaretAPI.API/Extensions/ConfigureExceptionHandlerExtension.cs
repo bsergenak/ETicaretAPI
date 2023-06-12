@@ -16,7 +16,6 @@ namespace ETicaretAPI.API.Extensions
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     context.Response.ContentType = MediaTypeNames.Application.Json;
 
-
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null)
                     {
@@ -27,7 +26,7 @@ namespace ETicaretAPI.API.Extensions
                             StatusCode = context.Response.StatusCode,
                             Message = contextFeature.Error.Message,
                             Title = "Hata alındı!"
-                        }));
+                        })); ;
                     }
                 });
             });

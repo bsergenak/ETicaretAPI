@@ -1,6 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ETicaretAPI.Persistence.Contexts;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Persistence.Repositories;
 using ETicaretAPI.Domain.Entities.Identity;

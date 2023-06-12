@@ -1,16 +1,20 @@
-﻿using ETicaretApi.SignalR;
-using ETicaretAPI.API.Configurations.ColumnWriters;
+﻿using ETicaretAPI.API.Configurations.ColumnWriters;
 using ETicaretAPI.API.Extensions;
 using ETicaretAPI.Application;
 using ETicaretAPI.Application.Validators.Products;
 using ETicaretAPI.Infrastructure;
 using ETicaretAPI.Infrastructure.Filters;
 using ETicaretAPI.Infrastructure.Services.Storage.Azure;
+using ETicaretAPI.Infrastructure.Services.Storage.Local;
 using ETicaretAPI.Persistence;
+using ETicaretAPI.SignalR;
+using ETicaretAPI.SignalR.Hubs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using NpgsqlTypes;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
@@ -40,13 +44,13 @@ Logger log = new LoggerConfiguration()
         needAutoCreateTable: true,
         columnOptions: new Dictionary<string, ColumnWriterBase>
         {
-            {"message",new RenderedMessageColumnWriter() },
-            {"message_template",new MessageTemplateColumnWriter() },
-            {"level",new LevelColumnWriter() },
-            {"time_stamp",new TimestampColumnWriter() },
-            {"exception",new ExceptionColumnWriter() },
-            {"log_event",new LogEventSerializedColumnWriter() },
-            {"user_name",new UsernameColumnWriter() },
+            {"message", new RenderedMessageColumnWriter(NpgsqlDbType.Text)},
+            {"message_template", new MessageTemplateColumnWriter(NpgsqlDbType.Text)},
+            {"level", new LevelColumnWriter(true , NpgsqlDbType.Varchar)},
+            {"time_stamp", new TimestampColumnWriter(NpgsqlDbType.Timestamp)},
+            {"exception", new ExceptionColumnWriter(NpgsqlDbType.Text)},
+            {"log_event", new LogEventSerializedColumnWriter(NpgsqlDbType.Json)},
+            {"user_name", new UsernameColumnWriter()}
         })
     .WriteTo.Seq(builder.Configuration["Seq:ServerURL"])
     .Enrich.FromLogContext()
@@ -58,7 +62,7 @@ builder.Host.UseSerilog(log);
 builder.Services.AddHttpLogging(logging =>
 {
     logging.LoggingFields = HttpLoggingFields.All;
-    logging.RequestHeaders.Add("sec - ch - ua"); //tüm teferruatlar kullanıcıya dair
+    logging.RequestHeaders.Add("sec-ch-ua");
     logging.MediaTypeOptions.AddText("application/javascript");
     logging.RequestBodyLogLimit = 4096;
     logging.ResponseBodyLogLimit = 4096;
@@ -76,17 +80,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new()
         {
-            ValidateAudience = true, //Olusturulacak token degerini kimlerin/hangi originlerin/sitelerin kullanýcý belirlediðimiz deðerdir. -> www.bilmemne.com
-            ValidateIssuer = true, //Oluþturulacak token degerini kimin dagittigini ifade edecegimiz alandýr. -> www.myapi.com
-            ValidateLifetime = true, //Oluþturulan token degerini süresini kontrol edecek olan dogrulamadir.
-            ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden secury key verisinin dogrulanmasıdır.
+            ValidateAudience = true, //Oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanýcý belirlediðimiz deðerdir. -> www.bilmemne.com
+            ValidateIssuer = true, //Oluþturulacak token deðerini kimin daðýttýný ifade edeceðimiz alandýr. -> www.myapi.com
+            ValidateLifetime = true, //Oluþturulan token deðerinin süresini kontrol edecek olan doðrulamadýr.
+            ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden suciry key verisinin doðrulanmasýdýr.
 
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
             LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
 
-            NameClaimType = ClaimTypes.Name //Jwt uzerinde Name claimine karsilik gelen degeri User.Idendity.Name propertysinden elde edebiliriz anlamina gelir.
+            NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
         };
     });
 
@@ -99,26 +103,24 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
-
 app.UseStaticFiles();
 
 app.UseSerilogRequestLogging();
 
+app.UseHttpLogging();
 app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.Use(async (context, next) =>
 {
-    var username = context.User.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;
+    var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;
     LogContext.PushProperty("user_name", username);
     await next();
 });
 
 app.MapControllers();
-
 app.MapHubs();
 
 app.Run();

@@ -29,7 +29,7 @@ namespace ETicaretAPI.Application.Features.Commands.Product.CreateProduct
                 Stock = request.Stock
             });
             await _productWriteRepository.SaveAsync();
-            await _productHubService.ProductAddedMessageAsync($"{request.Name}isminde bir ürün eklenmiştir.");
+            await _productHubService.ProductAddedMessageAsync($"{request.Name} isminde ürün eklenmiştir.");
             return new();
         }
     }

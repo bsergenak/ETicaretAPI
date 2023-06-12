@@ -20,6 +20,5 @@ namespace ETicaretAPI.Persistence
                 return configurationManager.GetConnectionString("PostgreSQL");
             }
         }
-
     }
 }
