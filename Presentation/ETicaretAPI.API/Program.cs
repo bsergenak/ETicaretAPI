@@ -1,4 +1,6 @@
-﻿using ETicaretAPI.API.Configurations.ColumnWriters;
+﻿using ETicaretApi.SignalR;
+using ETicaretAPI.API.Configurations.ColumnWriters;
+using ETicaretAPI.API.Extensions;
 using ETicaretAPI.Application;
 using ETicaretAPI.Application.Validators.Products;
 using ETicaretAPI.Infrastructure;
@@ -21,13 +23,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddSignalRServices();
 
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
 //builder.Services.AddStorage();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod()
+    policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 ));
 
 Logger log = new LoggerConfiguration()
@@ -73,10 +76,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new()
         {
-            ValidateAudience = true, //Oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanýcý belirlediðimiz deðerdir. -> www.bilmemne.com
-            ValidateIssuer = true, //Oluþturulacak token deðerini kimin daðýttýný ifade edeceðimiz alandýr. -> www.myapi.com
-            ValidateLifetime = true, //Oluþturulan token deðerinin süresini kontrol edecek olan doðrulamadýr.
-            ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden suciry key verisinin doðrulanmasýdýr.
+            ValidateAudience = true, //Olusturulacak token degerini kimlerin/hangi originlerin/sitelerin kullanýcý belirlediðimiz deðerdir. -> www.bilmemne.com
+            ValidateIssuer = true, //Oluþturulacak token degerini kimin dagittigini ifade edecegimiz alandýr. -> www.myapi.com
+            ValidateLifetime = true, //Oluþturulan token degerini süresini kontrol edecek olan dogrulamadir.
+            ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden secury key verisinin dogrulanmasıdır.
 
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
@@ -95,6 +98,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 
 app.UseStaticFiles();
 
@@ -114,5 +118,7 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
+
+app.MapHubs();
 
 app.Run();
