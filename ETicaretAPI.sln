@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicaretAPI.API", "Presentation\ETicaretAPI.API\ETicaretAPI.API.csproj", "{AD04996E-B93A-4D89-9A36-ADC31F514ABE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicaretApi.SignalR", "Infrastructure\ETicaretApi.SignalR\ETicaretApi.SignalR.csproj", "{DB03BF2A-EFFA-41A9-80DA-6839636E182A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicaretAPI.SignalR", "Infrastructure\ETicaretApi.SignalR\ETicaretAPI.SignalR.csproj", "{DB03BF2A-EFFA-41A9-80DA-6839636E182A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
