@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ETicaretAPI.SignalR.Hubs
 {
-    public class OrderHub: Hub
+    public class OrderHub : Hub
     {
     }
 }

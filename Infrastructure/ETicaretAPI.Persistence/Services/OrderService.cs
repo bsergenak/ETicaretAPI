@@ -22,7 +22,7 @@ namespace ETicaretAPI.Persistence.Services
         {
             await _orderWriteRepository.AddAsync(new()
             {
-                Address = createOrder.Adress,
+                Address = createOrder.Address,
                 Id = Guid.Parse(createOrder.BasketId),
                 Description = createOrder.Description
             });

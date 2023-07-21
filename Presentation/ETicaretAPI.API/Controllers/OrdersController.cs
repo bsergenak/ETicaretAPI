@@ -18,7 +18,7 @@ namespace ETicaretAPI.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest createOrderCommandRequest)
+        public async Task<ActionResult> CreateOrder(CreateOrderCommandRequest createOrderCommandRequest)
         {
             CreateOrderCommandResponse response = await _mediator.Send(createOrderCommandRequest);
             return Ok(response);

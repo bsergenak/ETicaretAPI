@@ -1,6 +1,5 @@
-﻿using ETicaretAPI.SignalR.Hubs;
-using ETicaretAPI.Application.Abstractions.Hubs;
-using ETicaretAPI.SignalR;
+﻿using ETicaretAPI.Application.Abstractions.Hubs;
+using ETicaretAPI.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;

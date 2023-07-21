@@ -20,10 +20,9 @@ namespace ETicaretAPI.Persistence.Services
         readonly UserManager<AppUser> _userManager;
         readonly IOrderReadRepository _orderReadRepository;
         readonly IBasketWriteRepository _basketWriteRepository;
+        readonly IBasketReadRepository _basketReadRepository;
         readonly IBasketItemWriteRepository _basketItemWriteRepository;
         readonly IBasketItemReadRepository _basketItemReadRepository;
-        readonly IBasketReadRepository _basketReadRepository;
-
         public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketReadRepository basketReadRepository)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -41,8 +40,8 @@ namespace ETicaretAPI.Persistence.Services
             if (!string.IsNullOrEmpty(username))
             {
                 AppUser? user = await _userManager.Users
-                    .Include(u => u.Baskets)
-                    .FirstOrDefaultAsync(u => u.UserName == username);
+                         .Include(u => u.Baskets)
+                         .FirstOrDefaultAsync(u => u.UserName == username);
 
                 var _basket = from basket in user.Baskets
                               join order in _orderReadRepository.Table
@@ -66,7 +65,7 @@ namespace ETicaretAPI.Persistence.Services
                 await _basketWriteRepository.SaveAsync();
                 return targetBasket;
             }
-            throw new Exception("Beklenmeyen bir hata ile karşılaşıldı...");
+            throw new Exception("Beklenmeyen bir hatayla karşılaşıldı...");
         }
 
         public async Task AddItemToBasketAsync(VM_Create_BasketItem basketItem)
@@ -96,6 +95,7 @@ namespace ETicaretAPI.Persistence.Services
                  .Include(b => b.BasketItems)
                  .ThenInclude(bi => bi.Product)
                  .FirstOrDefaultAsync(b => b.Id == basket.Id);
+
             return result.BasketItems
                 .ToList();
         }

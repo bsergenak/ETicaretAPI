@@ -26,12 +26,12 @@ namespace ETicaretAPI.Application.Features.Commands.Order.CreateOrder
         {
             await _orderService.CreateOrderAsync(new()
             {
-                Adress = request.Adress,
+                Address = request.Address,
                 Description = request.Description,
                 BasketId = _basketService.GetUserActiveBasket?.Id.ToString()
             });
 
-            await _orderHubService.OrderAddedMessageAsync("Hey, yeni bir sipariş geldi!");
+            await _orderHubService.OrderAddedMessageAsync("Heyy, yeni bir sipariş geldi! :) ");
 
             return new();
         }
